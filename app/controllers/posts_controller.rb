@@ -64,9 +64,12 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      current_user ? @post = current_user.posts.find(params[:id]) : @post = Post.find(params[:id])
-    rescue Mongoid::Errors::DocumentNotFound
-      @post = Post.find(params[:id])
+      if current_user 
+        @post = current_user.posts.find.try(params[:id]) 
+        @post = @post.nil? ? Post.find(params[:id]) : @post
+      else
+        @post = Post.find(params[:id])
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
