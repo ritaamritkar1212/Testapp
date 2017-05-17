@@ -1,4 +1,9 @@
 <p id="notice"><%= notice %></p>
+<h3> filter questions based on category </h3> 
+<form action="/posts">
+<%= select_tag 'filter', options_for_select(Category.all.map { |obj| [obj['name'], obj['id']] }) %>
+  <input type="submit" class="btn btn-success" value="Filter"/>
+</form>
 <%= link_to 'New Category', new_category_path %>
 
 <h1>Posts</h1>

@@ -3,8 +3,15 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, :except => [:index,:show]
   # GET /posts
   # GET /posts.json
-  def index
-    @posts = Post.all
+  def index    
+    if params[:filter] == nil || params[:filter] == 'all'
+      @filter = 'all'
+      @posts = Post.order('_id DESC')
+    else
+       @filter = params[:filter]
+
+       @posts = Post.where(:category_id => params[:filter])
+    end
   end
 
   # GET /posts/1
@@ -64,12 +71,7 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      if current_user 
-        @post = current_user.posts.find.try(params[:id]) 
-        @post = @post.nil? ? Post.find(params[:id]) : @post
-      else
-        @post = Post.find(params[:id])
-      end
+      @post = Post.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
